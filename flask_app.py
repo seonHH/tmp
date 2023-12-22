@@ -15,7 +15,7 @@ while True:
     s += data
 
     if len(s) == (46080 * 20):
-        frame = numpy.fromstring(s, dtype=numpy.uint8)
+        frame = repr(numpy.fromstring(s, dtype=numpy.uint8))
         frame = frame.reshape(480, 640, 3)
         cv2.imshow("frame", frame)
         s = b''
