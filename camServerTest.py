@@ -1,25 +1,14 @@
 import socket
-import cv2
-import time
-
-UDP_IP = "172.17.0.1"
-UDP_PORT = 6000
-
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-cap = cv2.VideoCapture(0)
-
-while True:
-    ret, frame = cap.read()
-
-    # time.sleep(3)
-
-    if frame is not None:
-        d = frame.flatten()
-        s = d.tostring()
-
-    for i in range(20):
-        sock.sendto(s[i*46080:(i+1)*46080], (UDP_IP, UDP_PORT))
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+ 
+# 클라이언트가 보내고자 하는 서버의 IP와 PORT
+server_ip = "172.17.0.1"
+server_port = 6000
+server_addr_port = (server_ip, server_port)
+ 
+# 보낼 메시지를 byte 배열로 바꾼다.
+msg_from_client = "Hello Server from client"
+bytes_to_send = str.encode(msg_from_client)
+ 
+# 소켓을 UDP로 열고 서버의 IP/PORT로 메시지를 보낸다.
+udp_client_socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+udp_client_socket.sendto(bytes_to_send, server_addr_port)

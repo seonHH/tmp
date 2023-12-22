@@ -1,25 +1,31 @@
 import socket
-import numpy
-import cv2
-
-UDP_IP = "172.17.0.1"
-UDP_PORT = 6000
-
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind((UDP_IP, UDP_PORT))
-
-s = b''
-
-while True:
-    data, addr = sock.recvfrom(46080)
-    s += data
-
-    if len(s) == (46080 * 20):
-        frame = repr(numpy.fromstring(s, dtype=numpy.uint8))
-        frame = frame.reshape(480, 640, 3)
-        cv2.imshow("frame", frame)
-        s = b''
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            cv2.destroyAllWindows()
-            break
+ 
+# 클라이언트가 보내고자 하는 서버의 IP와 PORT
+server_ip = "172.17.0.1"
+server_port = 6000
+server_addr_port = (server_ip, server_port)
+buffersize = 1024
+ 
+# 소켓을 UDP로 열고 서버의 IP/PORT를 연결한다. 그리고 Non-blocking로 바꾼다.
+udp_server_socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+udp_server_socket.bind(server_addr_port)
+udp_server_socket.setblocking(False)
+# udp_server_socket.settimeout(1.0)
+ 
+print("UDP server is up and listening")
+ 
+# Listen Datagram incoming
+while(True):
+  try:
+    byte_addr_pair = udp_server_socket.recvfrom(buffersize)
+  except BlockingIOError:
+    continue
+  msg  = byte_addr_pair[0]
+  addr = byte_addr_pair[1]
+ 
+  client_msg = "msg from client : {}".format(len(msg))
+  client_ip  = "client IP Addr : {}".format(addr)
+ 
+  print(client_msg)
+  print(client_ip)
+  print(msg)
