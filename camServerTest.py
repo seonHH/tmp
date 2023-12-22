@@ -1,5 +1,6 @@
 import socket
 import cv2
+import time
 
 UDP_IP = "172.17.0.1"
 UDP_PORT = 6000
@@ -10,8 +11,12 @@ cap = cv2.VideoCapture(0)
 
 while True:
     ret, frame = cap.read()
-    d = frame.flatten()
-    s = d.tostring()
+
+    # time.sleep(3)
+
+    if frame is not None:
+        d = frame.flatten()
+        s = d.tostring()
 
     for i in range(20):
         sock.sendto(s[i*46080:(i+1)*46080], (UDP_IP, UDP_PORT))
